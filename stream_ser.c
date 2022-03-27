@@ -27,7 +27,8 @@ int main(int argc, char ** argv){
 	char *temp = "EOF";
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	setsockopt(sockfd, IPPROTO_TCP, TCP_CONGESTION, argv[3], strlen(argv[3])+1);
+	if(setsockopt(sockfd, IPPROTO_TCP, TCP_CONGESTION, argv[3], strlen(argv[3])+1) < 0)
+		exit(EXIT_FAILURE);
 
 	seraddr.sin_family = AF_INET;
 	inet_aton((char *)argv[1], (struct in_addr *)&seraddr.sin_addr);

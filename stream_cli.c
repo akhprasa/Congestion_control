@@ -16,12 +16,12 @@ int read_bytes = 0;
 struct timeval start_time, cur_time;
 FILE *fp;
 pthread_mutex_t lock;
+char hostname[100];
 
 void print_content(){
 	float time;
 	gettimeofday(&cur_time, NULL);
 	time = (float)(cur_time.tv_sec - start_time.tv_sec)*1000.00 + (float)(cur_time.tv_usec - start_time.tv_usec)/1000.00;
-	printf("Throughput : %5f\n", read_bytes/time);
 	read_bytes = 0;
 	fprintf(fp, "%5f\n", time);
 	gettimeofday(&start_time, NULL);
@@ -33,11 +33,11 @@ double getCurTime(){
 	return (cur_time.tv_sec - start_time.tv_sec) + (double)(cur_time.tv_usec - start_time.tv_usec)/1000000;
 }
 
-void *Print(){
+void *Print( char * algo){
 	int i = 0;
 	double time;
-	char filename[100] = "log_files/log";
-	sprintf(filename, "%s%d.txt", filename, getpid());
+	char filename[100];
+	sprintf(filename, "log_files/log_%s_%s_%d.txt", hostname, algo, getpid());
 	FILE *fp = fopen(filename, "w");
 	double cur_time = 0;
 	while(1){
@@ -48,11 +48,12 @@ void *Print(){
 			time = 1.0;
 		cur_time += time;
 		pthread_mutex_lock(&lock);
-		printf("Throughput : %2f Mbps\n", (read_bytes/time)/1000000*8);
 		fprintf(fp, "%2f %2f\n", cur_time, (read_bytes/time)/1000000*8);
 		read_bytes = 0;
 		pthread_mutex_unlock(&lock);
 		i++;
+		if(i==120)
+			exit(EXIT_SUCCESS);
 	}
 	fclose(fp);
 }
@@ -61,14 +62,14 @@ int main(int argc, char ** argv){
 	int sockfd,i, flag=0;
 	struct sockaddr_in seraddr;
 	char buffer[1024];
-	fp = fopen("log_time.txt", "a");
 	int num = 0;
 	pthread_t thread;
 
 	pthread_mutex_init(&lock, NULL);
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	setsockopt(sockfd, IPPROTO_TCP, TCP_CONGESTION, argv[3], strlen(argv[3])+1);
+	if(setsockopt(sockfd, IPPROTO_TCP, TCP_CONGESTION, argv[3], strlen(argv[3])+1) < 0)
+		exit(EXIT_FAILURE);
 	
 	seraddr.sin_family = AF_INET;
 	seraddr.sin_port = htons((short)atoi(argv[2]));
@@ -81,7 +82,9 @@ int main(int argc, char ** argv){
 
 	send(sockfd, argv[4], strlen(argv[4]), 0);
 	gettimeofday(&start_time, NULL);
-	pthread_create(&thread, NULL, Print, NULL);
+	
+	strcpy(hostname, argv[5]);
+	pthread_create(&thread, NULL, Print, argv[3]);
 
 	while(1){
 		pthread_mutex_lock(&lock);
@@ -89,7 +92,6 @@ int main(int argc, char ** argv){
 		pthread_mutex_unlock(&lock);
 	}
 
-	close(fp);
 	close(sockfd);
 	pthread_mutex_destroy(&lock);
 

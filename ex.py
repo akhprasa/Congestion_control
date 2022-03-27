@@ -1,4 +1,7 @@
 from mininet.topo import Topo
+from mininet.link import TCLink
+from functools import partial
+from mininet.net import Mininet
 
 class MyTopo( Topo ):
     "Simple topology example."
@@ -26,4 +29,26 @@ class MyTopo( Topo ):
         self.addLink( rightSwitch, send3 )
 
 
-topos = { 'mytopo': ( lambda: MyTopo() ) }
+def Test():
+    topo = MyTopo()
+    net = Mininet(topo = topo, link = partial(TCLink, delay='0.5ms', bw=400))
+    net.start()
+    s1, s2, s3, r1, r2, r3 = net.get('s1', 's2', 's3', 'r1', 'r2', 'r3')
+    for i in range(10):
+        s1.sendCmd("./stream_ser 10.0.0.4 800" + str(i) + " illinois")
+        s2.sendCmd("./stream_ser 10.0.0.5 800" + str(i) + " illinois")
+        s3.sendCmd("./stream_ser 10.0.0.6 800" + str(i) + " illinois")
+        r1.sendCmd("./stream_cli 10.0.0.4 800" + str(i) + " illinois ex r1")
+        r2.sendCmd("./stream_cli 10.0.0.5 800" + str(i) + " illinois ex r2")
+        r3.sendCmd("./stream_cli 10.0.0.6 800" + str(i) + " illinois ex r3")
+        s1.waitOutput()
+        s2.waitOutput()
+        s3.waitOutput()
+        r1.waitOutput()
+        r2.waitOutput()
+        r3.waitOutput()
+    net.stop()
+
+if __name__ == "__main__":
+    Test()
+
