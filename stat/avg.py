@@ -1,5 +1,6 @@
 import os
 import sys
+import matplotlib.pyplot as plt
 
 files = os.listdir('log_files/')
 # stores sum of throughput for particular time
@@ -25,5 +26,9 @@ for f in files:
 for j in range(len(throughput_list)):
     throughput_list[j] = throughput_list[j]/count[j]
 
-print(throughput_list)
-    
+
+xx = list(range(1,len(throughput_list)+1))
+
+
+plt.plot(xx,throughput_list)
+plt.show()
