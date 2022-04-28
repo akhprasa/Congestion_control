@@ -17,6 +17,7 @@ struct timeval start_time, cur_time;
 FILE *fp;
 pthread_mutex_t lock;
 char hostname[100];
+char folder[100];
 
 void print_content(){
 	float time;
@@ -37,7 +38,7 @@ void *Print( char * algo){
 	int i = 0;
 	double time;
 	char filename[100];
-	sprintf(filename, "log_files/log_%s_%s_%d.txt", hostname, algo, getpid());
+	sprintf(filename, "%s/log_%s_%s_%d.txt", folder, hostname, algo, getpid());
 	FILE *fp = fopen(filename, "w");
 	double cur_time = 0;
 	while(1){
@@ -84,6 +85,7 @@ int main(int argc, char ** argv){
 	gettimeofday(&start_time, NULL);
 	
 	strcpy(hostname, argv[5]);
+	strcpy(folder, argv[6]);
 	pthread_create(&thread, NULL, Print, argv[3]);
 
 	while(1){
