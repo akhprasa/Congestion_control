@@ -111,17 +111,21 @@ throughput={
     'vivace':[]
 }
 
+
 for key,values in my_dict.items():
     throughput[key]=my_dict[key]['r1']
 
+throughput['pcc']=throughput['vivace']
+throughput.pop('vivace')
 
 xax = list(range(1,121))
 print(len(xax))
 for key, val in throughput.items():
     plt.plot(xax,throughput[key], label = key)
 plt.legend()
-plt.xlabel('Time Scale')
+
+plt.xlabel('Time (s)')
 plt.ylabel('Throughput (Mb/s)')
-plt.title('Throughput Comparison')
+plt.title('loss={:.0%} and RTT=0.5ms'.format(0))
 plt.show()
 

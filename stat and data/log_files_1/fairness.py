@@ -122,14 +122,17 @@ for key,values in my_dict.items():
         jatin_fairness.append(d/g)
     fairness[key]=jatin_fairness
 
+fairness['pcc']=fairness['vivace']
+fairness.pop('vivace')
+
 
 xax = list(range(1,121))
 print(len(xax))
 for key, val in fairness.items():
     plt.plot(xax,fairness[key],label = key)
 plt.legend()
-plt.xlabel('Time Scale')
+plt.xlabel('Time Scale (s)')
 plt.ylabel('Jain\'s Fairness Index')
-plt.title('Fairness Comparison')
+plt.title('loss={:.0%} and RTT=1ms'.format(0))
 plt.show()
 

@@ -147,11 +147,13 @@ for key, val in throughput.items():
     axs[0].plot(xax, throughput[key], label=key)
     axs[1].plot(xax, throughput1[key], label=key)
     axs[2].plot(xax, throughput2[key], label=key)
-plt.legend()
-axs[2].set_xlabel('Time Scale')
+
+# plt.legend(bbox_to_anchor=(1,0), loc="lower right", 
+#                 bbox_transform=fig.transFigure, ncol=6)
+axs[2].set_xlabel('Time Scale (s)')
 axs[1].set_ylabel('Throughput (Mb/s)')
 
-axs[0].set_title('Throughput Comparison')
+axs[0].set_title('loss={:.1%} and RTT=3ms, 6ms, 9ms'.format(0.005))
 
 plt.show()
 

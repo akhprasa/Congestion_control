@@ -6,7 +6,22 @@ files = os.listdir('log_files/')
 
 #stores the count of throughputs for each time -> to calcualte avg
 cnt = {
+    'bbr':{
+        'r1':[],
+        'r2':[],
+        'r3':[]
+    },
     'cubic':{
+        'r1':[],
+        'r2':[],
+        'r3':[]
+    },
+    'hybla':{
+        'r1':[],
+        'r2':[],
+        'r3':[]
+    },
+    'illinois':{
         'r1':[],
         'r2':[],
         'r3':[]
@@ -27,7 +42,22 @@ cnt = {
 
 # stores sum of throughput for each time
 my_dict = {
+    'bbr':{
+        'r1':[],
+        'r2':[],
+        'r3':[]
+    },
     'cubic':{
+        'r1':[],
+        'r2':[],
+        'r3':[]
+    },
+    'hybla':{
+        'r1':[],
+        'r2':[],
+        'r3':[]
+    },
+    'illinois':{
         'r1':[],
         'r2':[],
         'r3':[]
@@ -73,14 +103,16 @@ for key, values in my_dict.items():
 
 # fairness dict
 throughput={
+    'bbr':[],
     'cubic':[],
+    'hybla':[],
+    'illinois':[],
     'reno':[],
     'vivace':[]
 }
 
 for key,values in my_dict.items():
     throughput[key]=my_dict[key]['r1']
-    print(key, len(throughput[key]))
 
 throughput['pcc']=throughput['vivace']
 throughput.pop('vivace')
@@ -90,8 +122,8 @@ print(len(xax))
 for key, val in throughput.items():
     plt.plot(xax,throughput[key], label = key)
 plt.legend()
-plt.xlabel('Time Scale (s)')
+plt.xlabel('Time (s)')
 plt.ylabel('Throughput (Mb/s)')
-plt.title('loss={:.1%} and RTT=0.5ms'.format(0.005))
+plt.title('loss={:.0%} and RTT=1ms'.format(0))
 plt.show()
 

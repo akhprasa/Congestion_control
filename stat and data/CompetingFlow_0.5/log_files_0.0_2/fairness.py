@@ -105,8 +105,8 @@ print(len(jatin_fairness))
 plt.plot(xax,jatin_fairness,label = key)
 # for key, val in fairness.items():
 #     plt.plot(xax,fairness[key],label = key)
-plt.xlabel('Time Scale')
+plt.xlabel('Time Scale (s)')
 plt.ylabel('Jain\'s Fairness Index')
-plt.title('Fairness Comparison')
+plt.title('loss={:.0%} and RTT=2ms'.format(0))
 plt.show()
 

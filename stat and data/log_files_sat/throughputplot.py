@@ -88,8 +88,8 @@ print(len(xax))
 for key, val in throughput.items():
     plt.plot(xax,throughput[key], label = key)
 plt.legend()
-plt.xlabel('Time Scale')
+plt.xlabel('Time Scale (s)')
 plt.ylabel('Throughput (Mb/s)')
-plt.title('Throughput Comparison')
+plt.title('Throughput Comparison with Satellite Configuration')
 plt.show()
 
